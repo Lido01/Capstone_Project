@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Django Blog{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'posts' %}">Blog Posts</a></li>
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
+                <li>Home</li>
             </ul>
         </nav>
     </header>
@@ -25,9 +21,9 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Django Blog</p>
+        <p>&copy; 2024 Django Blog Patform</p>
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam provident fuga nisi mollitia. Laudantium placeat laborum impedit minima, voluptatibus, culpa magni provident obcaecati cupiditate quas repellendus illum harum, iste esse.</p>
     </footer>
 
-    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
