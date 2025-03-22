@@ -5,3 +5,9 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["username", "email"]
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    
