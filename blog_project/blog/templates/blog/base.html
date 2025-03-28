@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Django Blog{% endblock %}</title>
+    
+    
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li>Home</li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+
+
             </ul>
         </nav>
     </header>
@@ -22,8 +27,6 @@
 
     <footer>
         <p>&copy; 2024 Django Blog Patform</p>
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam provident fuga nisi mollitia. Laudantium placeat laborum impedit minima, voluptatibus, culpa magni provident obcaecati cupiditate quas repellendus illum harum, iste esse.</p>
     </footer>
-
 </body>
 </html>

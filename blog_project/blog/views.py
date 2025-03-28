@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-#from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required 
 from .models import Post
-from rest_framework import generics
+from django.views import generic
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, PostForm
 
 def register(request):
     if request.method == "POST":
@@ -34,3 +34,27 @@ def login(request):
 
 def home(request):
     return render(request, "blog/home.html")
+
+#Post CRUD Operation
+class PostListView(generic.ListView):
+    model = Post
+    template_name = "blog/post/post_list.html"
+    context_object_name = "posts"
+    
+
+class PostCreateView(generic.CreateView):
+    model = Post
+    form_class = PostForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class PostDetailView(generic.DetailView):
+    model = Post
+
+class PostUpdateView(generic.UpdateView):
+    model = Post
+
+class PostDeleteView(generic.DeleteView):
+    model = Post
