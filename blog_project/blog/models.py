@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 
-
-
 #1. Creating the Custom user and overide the default
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -12,7 +10,6 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
     def create_superuser(self, email, username, password=None):
         user = self.user_create(email, username, password)
         user.id_staff = True
@@ -22,7 +19,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=100)
-    profile_picture = models.ImageField()
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     bio = models.TextField()
 
     USERNAME_FIELD = "email"
@@ -31,7 +28,7 @@ class CustomUser(AbstractUser):
 
 #2 Creating the Category model to include each post
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     def __str__(self):
         return self.name
@@ -40,11 +37,10 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category", null=True)
-
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="posts", null=True)
     def __str__(self):
         return self.title
     class Meta:

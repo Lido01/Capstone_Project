@@ -1,60 +1,48 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required 
-from .models import Post
-from django.views import generic
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from .forms import RegistrationForm, LoginForm, PostForm
+from rest_framework import generics
+from .models import Post, Comment, Category,CustomUser
+from .serializers import RegisterSerializer, PostSerializer, CommentSerializer, LoginSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework import status
+from rest_framework.response import Response
 
-def register(request):
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("login")
-        
-    else:
-        form = RegistrationForm()
-    return render(request, "blog/register.html", {'form': form})
+#user create account
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
 
-def login(request):
-    if request.method =="POST":
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect("profile")
-    else:
-        form = LoginForm()
-    return render(request, "blog/login.html", {"form": form})
+#user login
+class LoginView(generics.CreateAPIView):
+    serializer_class = LoginSerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-def home(request):
-    return render(request, "blog/home.html")
+        user = serializer.validated_data
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key  }, status=status.HTTP_200_OK)
 
-#Post CRUD Operation
-class PostListView(generic.ListView):
-    model = Post
-    template_name = "blog/post/post_list.html"
-    context_object_name = "posts"
+#Posts create and list
+class PostListCreateView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
     
+#Comment create and list for specific post
+class CommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    def get_queryset(self):
+        self.kwargs["post_id"]
+        return Comment.objects.filter(post_id=post_id)
+    def perform_create(self, serializer):
+        post_id = self.kwargs["post_id"]
+        serializer.save(post_id=post_id)
+        return super().perform_create(serializer)
+    
+class PostRetrieveView(generics.RetrieveAPIView):
+    model = Post.objects.all()
+    serializer_class = PostSerializer
 
-class PostCreateView(generic.CreateView):
-    model = Post
-    form_class = PostForm
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-class PostDetailView(generic.DetailView):
-    model = Post
-
-class PostUpdateView(generic.UpdateView):
-    model = Post
-
-class PostDeleteView(generic.DeleteView):
-    model = Post
+class PostUpdateView(generics.UpdateAPIView):
+    model = Post.objects.all()
+    serializer_class = PostSerializer
+class PostDelete(generics.DestroyAPIView):
+    model = Post.objects.all()
+    serializer_class = PostSerializer

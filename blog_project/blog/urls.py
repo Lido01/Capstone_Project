@@ -1,12 +1,14 @@
 from django.urls import path, include
-from .views import register, login, home, PostListView, PostDetailView
+from . import views
 
 urlpatterns = (
-    path("register/", register, name="register"),
-    path("login/", login, name="login" ),
-    path("home/", home, name="home"),
+
+     #User authentication
+    path("register/", views.RegisterView.as_view(), name="login"),
+    path("login/", views.LoginView.as_view(), name="login"),
 
     #Post CRUD operation
-    path("post/list/", PostListView.as_view(), name="post_list"),
-    path("post/detail/", PostDetailView.as_view(), name="post_detail"),
+    path("posts/", views.PostListCreateView.as_view(), name="post_list"),
+    path("posts/<int:post_id>/comments/", views.CommentListCreateView.as_view(), name="comment_list_create"),
+    
 )
