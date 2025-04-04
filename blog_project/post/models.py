@@ -2,10 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from category.models import Category
 
-
 User = get_user_model()
-# Create your models here.
-#3 Creating the Post model to include post data
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()

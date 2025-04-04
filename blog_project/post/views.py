@@ -9,15 +9,17 @@ from .permissions import IsOwnerOrReadOnly
 
 #Posts create and list
 class PostListCreateView(generics.ListCreateAPIView):
+    #permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [SearchFilter, OrderingFilter] #Searching and Orderring
     search_fields = ["title", "content"]
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  # Set the author to the current user
+        serializer.save(user=self.request.user) # Set the author to the current user
+
 
 # You can detail,delete and update by post_id
 class RetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    # permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]

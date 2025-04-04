@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Post
 from rest_framework.serializers import SerializerMethodField, ModelSerializer
 from comment.models import Comment
+from category.models import Category
 
 class PostSerializer(serializers.ModelSerializer):
     user = SerializerMethodField() # To get username in field
@@ -13,7 +14,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return str(obj.user.username)
     def get_category(self, obj):
-        return str(obj.category.name)
+        #return str(obj.category.name)
+        return str(obj.category.name) if obj.category else "No Category"
+
     def get_comments(self, obj):
         # Retrieve only the 'content' field of related comments
         return [comment.content for comment in obj.comments.all()]
