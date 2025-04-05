@@ -25,6 +25,6 @@ urlpatterns = [
     path("blog/", include("comment.urls")),
     path("blog/", include("category.urls")),
 
-    path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path('api/', TokenRefreshView.as_view(), name="token_refresh"),
+    # path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    # path('api/', TokenRefreshView.as_view(), name="token_refresh"),
 ]

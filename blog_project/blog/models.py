@@ -22,9 +22,9 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(max_length=100, unique=True)  # Custom email field
-    username = models.CharField(max_length=100)  # Custom username field
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)  # Profile picture
+    email = models.EmailField(max_length=100, unique=True) 
+    username = models.CharField(max_length=100)  
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)  # Optional bio field
 
     USERNAME_FIELD = "email"  # Email will be used for authentication

@@ -1,4 +1,3 @@
-from django.test import TestCase
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.urls import reverse
@@ -12,7 +11,6 @@ class UserTests(APITestCase):
                 "password": "password"}
         response = self.client.post(reverse("register"), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
 
 class AuthAPItest(APITestCase):
     def setUp(self):
@@ -42,15 +40,15 @@ class AuthAPItest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
   
 
-    # def test_user_login(self):
-    #     data = {
-    #         "email": "newuser@gmail.com",
-    #         "password": "newuser123",
-    #     }
-    #     response = self.client.post(reverse("login", data))
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # self.assertIn('access', response.data)
-        # self.assertIn('refresh', response.data)
+    def test_user_login(self):
+        data = {
+            "email": "newuser@gmail.com",
+            "password": "newuser123",
+        }
+        response = self.client.post(reverse("login", data))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
 
 
     def test_invalid_user_login(self):

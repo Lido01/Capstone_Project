@@ -5,6 +5,6 @@ urlpatterns = (
 
 
     # Category Urls View
-    path('categories/', views.CategoryListCreateView.as_view(), name='category-list-create'),
-    path('categories/<int:pk>/', views.CategoryDetailView.as_view(), name='category-detail'),
+    path('categories/', views.CategoryListCreateView.as_view(), name='category_list_create'),
+    path('categories/<int:pk>/', views.CategoryDetailUpdateDeleteView.as_view(), name='category_detail'),
 )

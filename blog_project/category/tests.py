@@ -1,66 +1,72 @@
-# from rest_framework.test import APIClient, APITestCase
-# from .models import Category
-# from blog.models import CustomUser
-
-# class CategoryAPITestCase(APITestCase):
-#     def setUp(self):
-#         self.user = CustomUser.objects.create_user(
-#             username="testuser",
-#             email = "test@example.com",
-#             password="password123"
-#             )
-#         # Authenticate the client
-#         self.client.login(
-#             email = "test@example.com",
-#             password="password123"
-#             )
-#         self.category = Category.objects.create(
-#            name="Test One",
-#            description = "This is test one Description"
-#        )
-
-#     def test_category_list(self):
-
-#         data = 
-
-  
-# Create your tests here.
-from django.test import TestCase
+from rest_framework.test import APIClient, APITestCase
 from .models import Category
+from blog.models import CustomUser
+from django.urls import reverse
+from rest_framework import status
 
-class CategoryModelTestCase(TestCase):
+class CategoryAPITestCase(APITestCase):
     def setUp(self):
-        # Create initial category for testing
+        self.user = CustomUser.objects.create_user(
+            username="testuser",
+            email = "test@example.com",
+            password="password123"
+            )
+        # Authenticate the client
+        self.client.login(
+            email = "test@example.com",
+            password="password123"
+            )
         self.category = Category.objects.create(
-            name="Test Category",
-            description="This is a test category description."
-        )
+           name="Test One",
+           description = "This is test one Description"
+       )
+
+    def test_category_list(self):
+        response = self.client.get(reverse('category_list_create'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_category(self):
-        # Create a new category
-        category = Category.objects.create(
-            name="New Category",
-            description="Description for new category."
-        )
-        self.assertEqual(Category.objects.count(), 2)  # Check the count of categories
-        self.assertEqual(category.name, "New Category")  # Verify the name
+        data = {
+            "name": "Tech Category",
+            "description" : "This is tech Description"
+        }
 
-    def test_read_category(self):
-        # Retrieve the created category
-        category = Category.objects.get(name="Test Category")
-        self.assertEqual(category.description, "This is a test category description.")
-        self.assertEqual(str(category), "Test Category")  # Test __str__ method
+        response = self.client.get(reverse('category_list_create'), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], data['name'])
+
+        data = {
+            "name": "Updated Category",
+            "description": "Updated Description"
+            }
+        response = self.client.post(reverse('category_list_create'), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+    def test_get_category_list(self):
+        """Test retrieving the list of categories"""
+        response = self.client.get(reverse('category_list_create'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), Category.objects.count())
+
+    def test_get_category_detail(self):
+        """Test retrieving a specific category by ID"""
+        response = self.client.get(reverse('category_detail', kwargs={'pk': self.category.id}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.category.name)
 
     def test_update_category(self):
-        # Update the category's name
-        self.category.name = "Updated Category"
-        self.category.save()
-
-        updated_category = Category.objects.get(id=self.category.id)
-        self.assertEqual(updated_category.name, "Updated Category")
+        """Test updating an existing category"""
+        data = {
+            "name": "Updated Category",
+            "description": "Updated Description"
+            }
+        response = self.client.put(reverse('category_detail', kwargs={'pk': self.category.id}), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], data['name'])
 
     def test_delete_category(self):
-        # Delete the category
-        self.category.delete()
-
-        self.assertEqual(Category.objects.count(), 0)  # Ensure category is deleted
+        """Test deleting a category"""
+        response = self.client.delete(reverse('category_detail', kwargs={'pk': self.category.id}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Category.objects.count(), 0)
