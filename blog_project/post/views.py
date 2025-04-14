@@ -19,9 +19,8 @@ class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
     filter_backends = [SearchFilter, OrderingFilter] #Searching and Orderring
     search_fields = ["title", "content"]
-
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user) # Set the user to the current user
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user) # Set the user to the current user
 
 
 
